@@ -1,6 +1,6 @@
 # Used by `image`, `push` & `deploy` targets, override as required
 IMAGE_REG ?= docker.io
-IMAGE_REPO ?= dhanyak1997/Python-Flask-App
+IMAGE_REPO ?= dhanyak1997/python-flask-app
 
 IMAGE_TAG ?= latest
 
