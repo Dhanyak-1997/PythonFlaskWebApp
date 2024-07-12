@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Installing Python and Checking the Python Version') {
+            steps {
+                sh '''
+                    # Update the package list
+                    sudo yum update -y
+                    
+                    # Install Python 3 and pip
+                    sudo yum install -y python3 python3-pip
+                    
+                    # Verify the installation
+                    python3 --version
+                    pip3 --version
+                '''
+            }
+        }
+        
+        stage('Installing Docker and Checking the Docker Version') {
+            steps {
+                sh '''
+                    # Update the package list
+                    sudo yum update -y
+                    
+                    # Install Docker
+                    sudo yum install -y docker
+                    
+                    # Start Docker service
+                    sudo systemctl start docker
+                    sudo systemctl enable docker
+                    
+                    # Verify Docker installation
+                    docker --version
+                    sudo docker run hello-world
+                '''
+            }
+        }
+        
+        stage('Installing Make and Make Guile') {
+            steps {
+                sh '''
+                    sudo yum update -y
+                    
+                    # Install Make
+                    sudo yum install -y make
+                    
+                    # Install Make Guile
+                    #sudo yum install -y make-guile
+                    
+                    sudo yum install -y make guile22
+                '''
+            }
+        }
+    }
+}
