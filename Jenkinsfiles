@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Checkout from Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Dhanyak-1997/PythonFlaskWebApp.git'
+            }
+        }
+        
+        stage('Setup Docker Environment') {
+            steps {
+                sh '''
+                    # Start Docker service if not already started
+                    sudo systemctl start docker || true  # Ignore if already started
+                    sudo systemctl status docker --no-pager  # Check Docker service status
+                '''
+            }
+        }
+        
+        stage('Docker Build using MakeFile') {
+            steps {
+                sh "sudo systemctl start docker"
+                sh "make image"
+            }
+        }
+        
+          stage('Docker Build tag and Push Image') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'DockerHubCred', toolName: 'docker') {
+                      sh "make push"
+                }
+            }
+            }
+        }
+        
+         stage('Docker Deploy and Run container') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'DockerHubCred', toolName: 'docker') {
+                      sh "docker images"
+                      sh "docker run -d --rm -it -p 5000:5000 dhanyak1997/python-flask-app:latest"
+                }
+            }
+            }
+        }
+        
+        
+    }
+}
